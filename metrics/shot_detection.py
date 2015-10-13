@@ -7,6 +7,8 @@ import cv2
 import os
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 
 # /home/auroua/workspace/PycharmProjects/data/N20040103G/
 # test url /home/auroua/workspace/PycharmProjects/data/test/
@@ -42,7 +44,7 @@ def getFiles(path):
     return filelist
 
 if __name__=='__main__':
-    filenames = getFiles('/home/auroua/workspace/PycharmProjects/data/test')
+    filenames = getFiles('/home/auroua/workspace/PycharmProjects/data/N20040103G')
     # filenames = getFiles('/home/auroua/workspace/PycharmProjects/data/N20040103G')
     distance = []
     img1 = getImg(filenames[0])
@@ -64,8 +66,16 @@ if __name__=='__main__':
     print np_distance
     length = np_distance.shape[0]
     x_label = np.arange(0,length)
+    # line, = plt.bar(x_label, np_distance, '-', linewidth=2)
 
-    line, = plt.bar(x_label, np_distance, '-', linewidth=2)
+    sns.set(style="whitegrid")
+    # Initialize the matplotlib figure
+    f, ax = plt.subplots(figsize=(6, 15))
 
-    plt.show()
+    dic_data = {}
+    dic_data['index'] = x_label
+    dic_data['samilary'] = np_distance
+    sns.set_color_codes("pastel")
+    sns.barplot(x="index", y="samilary", data=dic_data,label="Total", color="b")
+    sns.plt.show()
 
