@@ -2,12 +2,9 @@
 __author__ = 'auroua'
 __version__ = 0.1
 
-import imgutil as img
 import numpy as np
 import seaborn as sns
-
-# /home/auroua/workspace/PycharmProjects/data/N20040103G/
-# test url /home/auroua/workspace/PycharmProjects/data/test/
+import imgutil as img
 
 if __name__=='__main__':
     filenames = img.getFiles('/home/auroua/workspace/PycharmProjects/data/N20040103G')
@@ -28,11 +25,11 @@ if __name__=='__main__':
         distance.append(np.sum(avg_img-avg_img2))
     # print distance
     np_distance = np.array(distance,dtype=np.double)
-    #preprocessing
     # np_distance = preprocessing.scale(np_distance)
     print np_distance
     length = np_distance.shape[0]
     x_label = np.arange(0,length)
+    # line, = plt.bar(x_label, np_distance, '-', linewidth=2)
 
     sns.set(style="whitegrid")
     dic_data = {}
