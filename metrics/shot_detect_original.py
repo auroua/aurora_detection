@@ -6,24 +6,25 @@ import numpy as np
 import seaborn as sns
 import imgutil as img
 
-if __name__=='__main__':
+if __name__ == '__main__':
     filenames = img.getFiles('/home/auroua/workspace/PycharmProjects/data/N20040103G')
     # filenames = getFiles('/home/auroua/workspace/PycharmProjects/data/N20040103G')
     distance = []
     # img1 = img.getImg(filenames[0])
-    for i,fn in enumerate(filenames):
+    for i, fn in enumerate(filenames):
         # print i,fn
         img1 = img.getImg(filenames[0])
-        avg_img = img.avg_channel(img1)
+        img_channel = img.getChannel(img1)
         # avg_img = img1
         try:
             url = filenames[i+1]
             img2 = img.getImg(url)
-            avg_img2 = img.avg_channel(img2)
+            img_channel2 = img.getChannel(img2)
+            # print img_channel is img_channel2
         except IndexError as ie:
             print 'end for loop'
             break
-        distance.append(np.sum(np.abs(avg_img-avg_img2)))
+        distance.append(np.sum(np.abs(img_channel-img_channel2)))
     # print distance
     np_distance = np.array(distance,dtype=np.double)
     # np_distance = preprocessing.scale(np_distance)

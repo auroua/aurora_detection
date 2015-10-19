@@ -8,28 +8,29 @@ import imgutil as img
 
 if __name__=='__main__':
     filenames = img.getFiles('/home/auroua/workspace/PycharmProjects/data/N20040103G')
+    # filenames = img.getFiles('/home/auroua/workspace/PycharmProjects/data/picture11')
     # filenames = getFiles('/home/auroua/workspace/PycharmProjects/data/N20040103G')
     distance = []
-    img1 = img.getImg(filenames[0])
+    # img1 = img.getImg(filenames[0])
     for i,fn in enumerate(filenames):
         # print i,fn
         img1 = img.getImg(filenames[0])
-        avg_img = img.avg_channel(img1)
+        hist_img = img.hist(img1)
         try:
             url = filenames[i+1]
             img2 = img.getImg(url)
-            avg_img2 = img.avg_channel(img2)
+            hist_img2 = img.hist(img2)
         except IndexError as ie:
             print 'end for loop'
             break
-        distance.append(np.sum(avg_img-avg_img2))
+        distance.append(np.sum(np.abs(hist_img-hist_img2)))
     # print distance
     np_distance = np.array(distance,dtype=np.double)
     # np_distance = preprocessing.scale(np_distance)
     print np_distance
+
     length = np_distance.shape[0]
     x_label = np.arange(0,length)
-    # line, = plt.bar(x_label, np_distance, '-', linewidth=2)
 
     sns.set(style="whitegrid")
     dic_data = {}
