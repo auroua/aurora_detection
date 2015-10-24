@@ -5,11 +5,13 @@ import os
 import cv2
 import numpy as np
 from time import clock
+import gnumpy as gpu
+import cudamat as cm
 
 # original file path  /home/auroua/workspace/PycharmProjects/data/N20040103G/
 # test file path  /home/auroua/workspace/PycharmProjects/data/test/
 
-def getFiles(path='/home/auroua/workspace/PycharmProjects/data/N20040103G/'):
+def getFiles(path='/home/auroua/workspace/PycharmProjects/data/data2/'):
     '''获取制定目录下的文件的绝对路径,带文件名'''
     filelist = []
     FileNames = os.listdir(path)
@@ -87,21 +89,67 @@ def generate_vector(files):
         # cv2.waitKey(0)
     return data_vector
 
-def gen_matrix(img_vector):
-    # memory space is not enough  memory-error exception
-    # img_vector1 = img_vector[np.newaxis, :, :, :]
-    # img_vector2 = img_vector[:, np.newaxis, :, :]
-    # temp = img_vector1-img_vector2
-    # return np.abs(img_vector1-img_vector2).sum(axis=3).sum(axis=2)
-    # the running time of this programm nearly three hours
+# def gen_matrix(img_vector):
+#     # memory space is not enough  memory-error exception
+#     # img_vector1 = img_vector[np.newaxis, :, :, :]
+#     # img_vector2 = img_vector[:, np.newaxis, :, :]
+#     # temp = img_vector1-img_vector2
+#     # return np.abs(img_vector1-img_vector2).sum(axis=3).sum(axis=2)
+#     # the running time of this programm nearly three hours
+#
+#     img_vector = img_vector.astype(dtype=np.int32)
+#     gpu_img_vector = cm.CUDAMatrix(img_vector)
+#
+#     temp_vector = np.zeros((img_vector.shape))
+#     result_vector = np.zeros((img_vector.shape[0], img_vector.shape[1]))
+#     gpu_result_vector = cm.CUDAMatrix(result_vector)
+#     final_result_vector = np.zeros((img_vector.shape[0], img_vector.shape[0]))
+#     gpu_final_result_vector = cm.CUDAMatrix(final_result_vector)
+#
+#     img_matrix = np.zeros((img_vector.shape[0], img_vector.shape[0]))
+#
+#     gpu_temp_vector = cm.CUDAMatrix(temp_vector)
+#     for i in range(0, img_vector.shape[0]):
+#         base_img = img_vector[i, :, :]
+#         base_img_3d = base_img[np.newaxis, :, :]
+#         temp_vector = np.tile(base_img_3d, (temp_vector.shape[0], 1, 1))
+#         print temp_vector.shape
+#         gpu_base_img = cm.CUDAMatrix(temp_vector)
+#         print gpu_base_img.shape
+#
+#         # img_matrix[:, i:i+1] = np.abs(gpu_img_vector - base_img[np.newaxis, :, :]).sum(axis=2).sum(axis=1,keepdims=True)
+#         gpu_img_vector.subtract(gpu_base_img,target = gpu_base_img)
+#         cm.abs(gpu_base_img, target=gpu_base_img)
+#         print gpu_base_img.shape
+#         gpu_base_img.sum(axis=2, target=gpu_result_vector)
+#         gpu_result_vector.sum(axis=1, target=gpu_final_result_vector)
+#         gpu_final_result_vector.copy_to_host()
+#         print gpu_final_result_vector.shape
+#         print gpu_final_result_vector.max(), gpu_final_result_vector.min()
+#
+#         img_matrix[:, i:i+1] = np.abs(gpu_img_vector - base_img_3d).sum(axis=2).sum(axis=1,keepdims=True)
+#     np.save('/home/auroua/workspace/PycharmProjects/data/similary',img_matrix)
+#     return img_matrix
 
+# old version
+# def gen_matrix(img_vector):
+#     img_vector = img_vector.astype(dtype=np.int32)
+#     img_matrix = np.zeros((img_vector.shape[0], img_vector.shape[0]))
+#     for i in range(0, img_vector.shape[0]):
+#         img_matrix[:, i:i+1] = np.abs(img_vector - img_vector[i, :, :,][np.newaxis, :, :]).sum(axis=2).sum(axis=1,keepdims=True)
+#     np.save('/home/auroua/workspace/PycharmProjects/data/similary',img_matrix)
+#     return img_matrix
+
+def gen_matrix(img_vector):
     img_vector = img_vector.astype(dtype=np.int32)
     img_matrix = np.zeros((img_vector.shape[0], img_vector.shape[0]))
     for i in range(0, img_vector.shape[0]):
-        base_img = img_vector[i, :, :]
-        img_matrix[:, i:i+1] = np.abs(img_vector - base_img[np.newaxis, :, :]).sum(axis=2).sum(axis=1,keepdims=True)
+        for j in range(0,img_vector.shape[0]):
+            img_matrix[i, j] = np.abs(img_vector[i, :, :] - img_vector[j, :, :]).sum()
+            print img_matrix[i, j]
     np.save('/home/auroua/workspace/PycharmProjects/data/similary',img_matrix)
     return img_matrix
+
 
 if __name__=='__main__':
     # /home/auroua/workspace/lena.png
@@ -118,8 +166,11 @@ if __name__=='__main__':
     data = generate_vector(getFiles())
     print '----------------------------------------'
     start = clock()
+    print start
     res_matrix = gen_matrix(data)
     end = clock()
+    print end
+    print end - start
 
     print res_matrix
     # print data.shape
