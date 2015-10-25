@@ -5,13 +5,11 @@ import os
 import cv2
 import numpy as np
 from time import clock
-import gnumpy as gpu
-import cudamat as cm
 
 # original file path  /home/auroua/workspace/PycharmProjects/data/N20040103G/
 # test file path  /home/auroua/workspace/PycharmProjects/data/test/
 
-def getFiles(path='/home/auroua/workspace/PycharmProjects/data/data2/'):
+def getFiles(path='/home/auroua/workspace/PycharmProjects/data/N20040103G/'):
     '''获取制定目录下的文件的绝对路径,带文件名'''
     filelist = []
     FileNames = os.listdir(path)
@@ -146,7 +144,7 @@ def gen_matrix(img_vector):
     for i in range(0, img_vector.shape[0]):
         for j in range(0,img_vector.shape[0]):
             img_matrix[i, j] = np.abs(img_vector[i, :, :] - img_vector[j, :, :]).sum()
-            print img_matrix[i, j]
+            # print img_matrix[i, j]
     np.save('/home/auroua/workspace/PycharmProjects/data/similary',img_matrix)
     return img_matrix
 
