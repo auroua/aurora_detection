@@ -128,5 +128,3 @@ if __name__=='__main__':
     print end - start
 
     print res_matrix.shape
-
-

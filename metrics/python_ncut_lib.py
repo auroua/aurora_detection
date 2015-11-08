@@ -70,8 +70,8 @@ from scipy.linalg import norm, svd, LinAlgError
 
 # exception hander for singular value decomposition
 class SVDError(Exception):
-    def __init__(self,value):
-        self.value=value
+    def __init__(self, value):
+        self.value = value
     def __str__(self):
         return repr(self.value)
 
@@ -91,7 +91,7 @@ class SVDError(Exception):
 #    nvEigenValues: number of eigenvectors that should be calculated, this
 #                   determines the maximum number of clusters (K) that can be
 #                   derived from the
-#    result
+#                   result
 #    eigen_val:     (output) eigenvalues from the eigen decomposition of the
 #                   LaPlacian of W
 #    eigen_vec:     (output) eigenvectors from the eign decomposition of the
