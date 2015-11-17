@@ -1,5 +1,4 @@
-#encoding:UTF-8
-__author__ = 'auroua'
+# encoding:UTF-8
 
 import os
 import cv2
@@ -10,7 +9,7 @@ from time import clock
 # original file path  /home/auroua/workspace/PycharmProjects/data/N20040103G/
 # test file path  /home/auroua/workspace/PycharmProjects/data/test/
 
-def getFiles(path='/home/auroua/workspace/PycharmProjects/data/N20040103G/'):
+def getFiles(path='/home/aurora/workspace/PycharmProjects/data/N20040103G/'):
     '''获取制定目录下的文件的绝对路径,带文件名'''
     filelist = []
     FileNames = os.listdir(path)
@@ -115,7 +114,8 @@ def gen_matrix_gausses(img_vector):
     return img_matrix
 
 if __name__=='__main__':
-    # img = getImg('/home/auroua/workspace/PycharmProjects/data/N20040103G/N20040103G030001.bmp')
+    # img = getImg('/home/aurora/workspace/PycharmProjects/data/N20040103G/N20040103G030001.bmp')
+    # showImg(img)
 
     data = generate_vector(getFiles())
     print '----------------------------------------'

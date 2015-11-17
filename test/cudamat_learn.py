@@ -1,6 +1,5 @@
 __author__ = 'auroua'
 
-import pdb
 import numpy as np
 import nose
 import cudamat as cm
