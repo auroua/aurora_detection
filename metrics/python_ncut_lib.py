@@ -100,7 +100,7 @@ class SVDError(Exception):
 def ncut( W, nbEigenValues ):
     # parameters
     offset=.5
-    maxiterations=100
+    maxiterations=100000
     eigsErrorTolerence=1e-6
     eps=2.2204e-16
 
@@ -108,9 +108,9 @@ def ncut( W, nbEigenValues ):
 
     # make sure that W is symmetric, this is a computationally expensive
     # operation, only use for debugging
-    # if (W-W.transpose()).sum() != 0:
-    #    print "W should be symmetric!"
-    #    exit(0)
+    if (W-W.transpose()).sum() != 0:
+       print "W should be symmetric!"
+       exit(0)
 
     # degrees and regularization
     # S Yu Understanding Popout through Repulsion CVPR 2001

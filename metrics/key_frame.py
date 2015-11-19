@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 
 if __name__ == '__main__':
-    matrix = np.load('/home/auroua/workspace/PycharmProjects/data/similary_gausses.npy').T
+    matrix = np.load('/home/aurora/hdd/workspace/PycharmProjects/data/similary_gausses.npy').T
     print matrix.shape
     print matrix.size
     print matrix.max(),matrix.min()

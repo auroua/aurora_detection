@@ -99,7 +99,7 @@ def gen_matrix(img_vector):
 def caucal_gausses(i, j, sigma=3, d=20):
     d = -1*(1/20.)
     # return math.exp(d*((i-j)/3.)**2)
-    return math.exp(d*((i-j)/13.)**2)
+    return math.exp(d*((i-j)/33.)**2)
 
 def gen_matrix_gausses(img_vector):
     #d=20, sigma = 3
@@ -110,7 +110,7 @@ def gen_matrix_gausses(img_vector):
         for j in range(0,img_vector.shape[0]):
             img_matrix[i, j] = np.abs(img_vector[i, :, :] - img_vector[j, :, :]).sum()
             img_matrix[i, j] *= caucal_gausses(i, j)
-    np.save('/home/auroua/workspace/PycharmProjects/data/similary_gausses_13',img_matrix)
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/similary_gausses_33',img_matrix)
     return img_matrix
 
 if __name__=='__main__':
