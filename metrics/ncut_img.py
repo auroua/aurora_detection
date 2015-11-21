@@ -47,50 +47,21 @@ if __name__ == '__main__':
     img_weights_13 = np.load('/home/aurora/hdd/workspace/PycharmProjects/data/similary_gausses_13.npy')
     img_weights_33 = np.load('/home/aurora/hdd/workspace/PycharmProjects/data/similary_gausses_33.npy')
     # show_weights_img(img_weights)
+    datas = [img_weights_3, img_weights_9, img_weights_13, img_weights_33]
 
-    category = [100, 200, 300, 400]
-    index = np.linspace(0, 1, 4312)
+    # category = [100, 200, 300, 400]
+    category = [4, 6, 8, 10]
     results = np.zeros((4, len(category), img_weights_3.shape[0]))
-    for k in category:
-        eigval, eigvec = ncut.ncut(img_weights_3, k)
-        discret_eigvec = ncut.discretisation(eigvec)
-        group_img = discret_eigvec[:, 0]
-        for i in range(1, k):
-            group_img += (i+1)*discret_eigvec[:, i]
-            # print results[category.index(k)].shape
-        results[0, category.index(k)] = group_img.todense().T
-        results[0, category.index(k)] = (results[0, category.index(k)]/k)*256
-
-    for k in category:
-        eigval, eigvec = ncut.ncut(img_weights_9, k)
-        discret_eigvec = ncut.discretisation(eigvec)
-        group_img_9 = discret_eigvec[:, 0]
-        for i in range(1, k):
-            group_img_9 += (i+1)*discret_eigvec[:, i]
-            # print results[category.index(k)].shape
-        results[1, category.index(k)] = group_img_9.todense().T
-        results[0, category.index(k)] = (results[0, category.index(k)]/k)*256
-
-    for k in category:
-        eigval, eigvec = ncut.ncut(img_weights_13, k)
-        discret_eigvec = ncut.discretisation(eigvec)
-        group_img_13 = discret_eigvec[:, 0]
-        for i in range(1, k):
-            group_img_13 += (i+1)*discret_eigvec[:, i]
-            # print results[category.index(k)].shape
-        results[2, category.index(k)] = group_img_13.todense().T
-        results[0, category.index(k)] = (results[0, category.index(k)]/k)*256
-
-    for k in category:
-        eigval, eigvec = ncut.ncut(img_weights_33, k)
-        discret_eigvec = ncut.discretisation(eigvec)
-        group_img_33 = discret_eigvec[:, 0]
-        for i in range(1, k):
-            group_img_33 += (i+1)*discret_eigvec[:, i]
-            # print results[category.index(k)].shape
-        results[3, category.index(k)] = group_img_33.todense().T
-        results[0, category.index(k)] = (results[0, category.index(k)]/k)*256
-
+    for idx, data in enumerate(datas):
+        for k in category:
+            eigval, eigvec = ncut.ncut(data, k)
+            discret_eigvec = ncut.discretisation(eigvec)
+            group_img = discret_eigvec[:, 0]
+            for i in range(1, k):
+                group_img += (i+1)*discret_eigvec[:, i]
+                # print results[category.index(k)].shape
+            results[idx, category.index(k)] = group_img.todense().T
+            # results[0, category.index(k)] = (results[0, category.index(k)]/k)*256
     print results.shape
 
     cmp_list = ['CMRmap', 'CMRmap', 'CMRmap', 'CMRmap', 'CMRmap']
