@@ -36,7 +36,8 @@ cmap.set_under('0.75')
 # If a ListedColormap is used, the length of the bounds array must be
 # one greater than the length of the color list.  The bounds must be
 # monotonically increasing.
-bounds = [1, 2, 4, 7, 8]
+# bounds = [1, 2, 4, 7, 8]
+bounds = [100, 200, 300, 400, 500]
 norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 cb2 = mpl.colorbar.ColorbarBase(ax2, cmap=cmap,
                                 norm=norm,
