@@ -9,7 +9,7 @@ from time import clock
 # original file path  /home/auroua/workspace/PycharmProjects/data/N20040103G/
 # test file path  /home/auroua/workspace/PycharmProjects/data/test/
 
-def getFiles(path='/home/aurora/workspace/PycharmProjects/data/N20040103G/'):
+def getFiles(path='/home/aurora/hdd/workspace/PycharmProjects/data/N20040103G/'):
     '''获取制定目录下的文件的绝对路径,带文件名'''
     filelist = []
     FileNames = os.listdir(path)
