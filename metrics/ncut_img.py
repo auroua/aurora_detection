@@ -47,10 +47,12 @@ if __name__ == '__main__':
     img_weights_9 = np.load('/home/aurora/hdd/workspace/PycharmProjects/data/similary_gausses_9.npy')
     img_weights_13 = np.load('/home/aurora/hdd/workspace/PycharmProjects/data/similary_gausses_13.npy')
     img_weights_33 = np.load('/home/aurora/hdd/workspace/PycharmProjects/data/similary_gausses_33.npy')
+    hist_weights_33 = np.load('/home/aurora/workspace/PycharmProjects/data/hist_adjacent_matrix.npy')
+    hist_weights_constraint_33 = np.load('/home/aurora/workspace/PycharmProjects'
+                                         '/data/hist_adjacent_matrix_constraint.npy')
     # show_weights_img(img_weights)
     # datas = [img_weights_3, img_weights_9, img_weights_13, img_weights_33]
-    datas = [img_weights_33]
-
+    datas = [hist_weights_constraint_33]
     start = clock()
     category = [100, 200, 300, 400]
     # category = [4, 6, 8, 10]
@@ -66,7 +68,11 @@ if __name__ == '__main__':
             results[idx, category.index(k)] = group_img.todense().T
             # results[0, category.index(k)] = (results[0, category.index(k)]/k)*256
     print results.shape
-    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/ncuts_results_sigma_33', results)
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/hist_ncuts_constraint_sigma_33', results)
+    print np.unique(results[0])
+    print np.unique(results[1])
+    print np.unique(results[2])
+    print np.unique(results[3])
 
     end = clock()
     print 'total run time is: '

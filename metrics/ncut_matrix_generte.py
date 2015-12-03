@@ -19,7 +19,7 @@ def weights(images, x1, y1, x2, y2, p_dist):
     return w_brightness*w_distance
 
 if __name__ == '__main__':
-    # method1 using embedded loop
+    # method1 using nested loop
     # sigmai = 0.1 sigmaix=4.0 r=5    image size:196*284
     img = cv2.imread('/home/aurora/hdd/workspace/PycharmProjects/data/imgs/ncuts.png')
     b, g, r = cv2.split(img)
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     print end - start
 
     print weight.shape, weight.max(), weight.min()
-    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/img/ncuts_weight2', weight)
+    np.save('/home/aurora/workspace/PycharmProjects/data/img/hist_ncuts_weight33', weight)
 
 
     # cv2.imshow('ncuts',b)
