@@ -13,6 +13,7 @@ from sklearn.preprocessing import scale
 np.random.seed(42)
 
 digits = load_digits()
+print digits
 data = scale(digits.data)
 
 n_samples, n_features = data.shape
