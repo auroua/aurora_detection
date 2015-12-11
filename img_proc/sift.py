@@ -82,13 +82,14 @@ def match(desc1, desc2):
         dotprods = 0.9999*dotprods
         # indx is a two dim matrix
         indx = np.argsort(np.arccos(dotprods))
-        print desc1.shape
-        print desc2.shape
-        print indx.shape
+        # print desc1.shape
+        # print desc2.shape
+        # print indx.shape
         # if indx.shape[0] >= 2 and desc1.shape[0] >= 2:
         if np.arccos(dotprods)[indx[0]] < dist_ratio*np.arccos(dotprods)[indx[1]]:
                 matchscores[i] = int(indx[0])
-        return matchscores
+
+    return matchscores
 
 
 def match_twosided(desc1, desc2):
@@ -96,6 +97,10 @@ def match_twosided(desc1, desc2):
     matches_12 = match(desc1, desc2)
     matches_21 = match(desc2, desc1)
     # return the index address
+    print type(matches_12)
+    print matches_12.shape
+    # if matches_12 is None:
+
     ndx_12 = matches_12.nonzero()[0]
 
     # 去除非对称的匹配
