@@ -9,6 +9,7 @@ def process_image(imagename, resultname, params="--edge-thresh 10 --peak-thresh 
     """处理一副图像， 然后将结果保存在文件中"""
     if imagename[-3:]!='pgm':
         # 创建一个pgm文件
+        print imagename
         im = Image.open(imagename).convert('L')
         im.save('/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/temp.pgm')
         imagename = '/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/temp.pgm'
@@ -71,14 +72,23 @@ def match(desc1, desc2):
     desc1_size = desc1.shape
     matchscores = np.zeros((desc1_size[0], 1), 'int')
     desc2t = desc2.T
+
     for i in range(desc1_size[0]):
+        if desc1_size[0] < 2:
+            continue
+        if desc2.shape[0] < 2:
+            continue
         dotprods = np.dot(desc1[i, :], desc2t)
         dotprods = 0.9999*dotprods
         # indx is a two dim matrix
         indx = np.argsort(np.arccos(dotprods))
+        print desc1.shape
+        print desc2.shape
+        print indx.shape
+        # if indx.shape[0] >= 2 and desc1.shape[0] >= 2:
         if np.arccos(dotprods)[indx[0]] < dist_ratio*np.arccos(dotprods)[indx[1]]:
-            matchscores[i] = int(indx[0])
-    return matchscores
+                matchscores[i] = int(indx[0])
+        return matchscores
 
 
 def match_twosided(desc1, desc2):

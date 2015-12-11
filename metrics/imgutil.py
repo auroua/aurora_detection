@@ -5,6 +5,9 @@ import cv2
 import numpy as np
 import math
 from time import clock
+import img_proc.sift as sift
+from PIL import Image
+import img_proc.dsift as dsift
 
 # original file path  /home/auroua/workspace/PycharmProjects/data/N20040103G/
 # test file path  /home/auroua/workspace/PycharmProjects/data/test/
@@ -147,7 +150,7 @@ def gen_matrix(img_vector):
     for i in range(0, img_vector.shape[0]):
         for j in range(0,img_vector.shape[0]):
             img_matrix[i, j] = np.abs(img_vector[i, :, :] - img_vector[j, :, :]).sum()
-    np.save('/home/auroua/workspace/PycharmProjects/data/similary',img_matrix)
+    np.save('/home/auroua/workspace/PycharmProjects/data/sub_matrix_distance_2015_1211',img_matrix)
     return img_matrix
 
 
@@ -164,28 +167,135 @@ def gen_matrix_gausses(img_vector):
     w_gauss = 0
     for i in range(0, img_vector.shape[0]):
         for j in range(0, img_vector.shape[0]):
-            img_matrix[i, j] = np.abs(img_vector[i, :, :] - img_vector[j, :, :]).sum()
-            img_matrix[i, j] *= caucal_gausses(i, j)
-    # np.save('/home/aurora/hdd/workspace/PycharmProjects/data/similary_gausses_33',img_matrix)
+            v_distance = math.fabs(i-j)
+            if v_distance <= 10:
+                img_matrix[i, j] = 0
+            else:
+                img_matrix[i, j] = np.abs(img_vector[i, :, :] - img_vector[j, :, :]).sum()
+                img_matrix[i, j] *= caucal_gausses(i, j)
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/sub_matrix_distance_2015_1211',img_matrix)
+    return img_matrix
+
+
+def sfit_desc_generator(filelist):
+    filelists = getFiles()
+    for index, file in enumerate(filelists):
+        sift.process_image(file, 'aurora'+str(index)+'.sift')
+
+
+def sift_distance(desc1, desc2):
+    matchs = sift.match_twosided(desc1, desc2)
+    desc1 = np.array([d/np.linalg.norm(d) for d in desc1])
+    desc2 = np.array([d/np.linalg.norm(d) for d in desc2])
+    values = 0.0
+    counts = 0
+    for i, m in enumerate(matchs):
+        # print 'the value of i '+str(i)+' the value of m is '+str(m)
+        if m > 0:
+            scores = np.dot(desc1[i, :], desc2[m, :].T)
+            values += scores
+            counts += 1
+    if counts==0:
+        return 0
+    else:
+        return values/counts
+
+def get_sift_distance_matrix_with_constraint(img_vectors):
+    img_vector = img_vectors.astype(dtype=np.int32)
+    img_matrix = np.zeros((img_vector.shape[0], img_vector.shape[0]))
+    for i in range(0, img_vector.shape[0]):
+        for j in range(0, img_vector.shape[0]):
+            v_distance = math.fabs(i-j)
+            if v_distance <= 10:
+                img_matrix[i, j] = 0
+            else:
+                l1, d1 = sift.read_feature_from_file('aurora'+str(i)+'.sift')
+                l2, d2 = sift.read_feature_from_file('aurora'+str(j)+'.sift')
+                img_matrix[i, j] = sift_distance(d1, d2)
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/sift_distance_2015_1211_with_constraint',img_matrix)
+    return img_matrix
+
+
+def get_sift_distance_matrix_without_constraint(img_vectors):
+    img_vector = img_vectors.astype(dtype=np.int32)
+    img_matrix = np.zeros((img_vector.shape[0], img_vector.shape[0]))
+    for i in range(0, img_vector.shape[0]):
+        for j in range(0, img_vector.shape[0]):
+            l1, d1 = sift.read_feature_from_file('aurora'+str(i)+'.sift')
+            l2, d2 = sift.read_feature_from_file('aurora'+str(j)+'.sift')
+            img_matrix[i, j] = sift_distance(d1, d2)
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/sift_distance_2015_1211_without_constraint',img_matrix)
+    return img_matrix
+
+
+def dsfit_desc_generator(filelist):
+    filelists = getFiles()
+    for index, file in enumerate(filelists):
+        dsift.process_image_dsift(file, 'dsiftaurora'+str(index)+'.sift', 30, 10, True)
+
+
+
+def get_dsift_distance_matrix_with_constraint(img_vectors):
+    img_vector = img_vectors.astype(dtype=np.int32)
+    img_matrix = np.zeros((img_vector.shape[0], img_vector.shape[0]))
+    for i in range(0, img_vector.shape[0]):
+        for j in range(0, img_vector.shape[0]):
+            v_distance = math.fabs(i-j)
+            if v_distance <= 10:
+                img_matrix[i, j] = 0
+            else:
+                l1, d1 = sift.read_feature_from_file('dsiftaurora'+str(i)+'.sift')
+                l2, d2 = sift.read_feature_from_file('dsiftaurora'+str(j)+'.sift')
+                temp_value = np.abs(d1-d2)
+                distance = np.mean(temp_value)
+                img_matrix[i, j] = distance
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/dsift_distance_2015_1211_with_constraint',img_matrix)
+    return img_matrix
+
+
+def get_dsift_distance_matrix_without_constraint(img_vectors):
+    img_vector = img_vectors.astype(dtype=np.int32)
+    img_matrix = np.zeros((img_vector.shape[0], img_vector.shape[0]))
+    for i in range(0, img_vector.shape[0]):
+        for j in range(0, img_vector.shape[0]):
+            l1, d1 = sift.read_feature_from_file('dsiftaurora'+str(i)+'.sift')
+            l2, d2 = sift.read_feature_from_file('dsiftaurora'+str(j)+'.sift')
+            temp_value = np.abs(d1-d2)
+            distance = np.mean(temp_value)
+            img_matrix[i, j] = distance
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/dsift_distance_2015_1211_without_constraint',img_matrix)
     return img_matrix
 
 
 if __name__=='__main__':
-    # img = getImg('/home/aurora/workspace/PycharmProjects/data/N20040103G/N20040103G030001.bmp')
-    # showImg(img)
-    hist_matrixs = generate_hist(getFiles())
-    print hist_matrixs
-    # adjacent_matrix = hist_adjacent_matrix(hist_matrixs)
-    adjacent_matrix = hist_matrix_add_distance_constraint(hist_matrixs)
-    print adjacent_matrix
-    # data = generate_vector(getFiles())
-    # print '----------------------------------------'
-    # start = clock()
-    # print start
-    # # res_matrix = gen_matrix(data)
-    # res_matrix = gen_matrix_gausses(data)
-    # end = clock()
-    # print end
-    # print end - start
-    #
-    # print res_matrix.shape
+    # # img = getImg('/home/aurora/workspace/PycharmProjects/data/N20040103G/N20040103G030001.bmp')
+    # # showImg(img)
+    # hist_matrixs = generate_hist(getFiles())
+    # print hist_matrixs
+    # # adjacent_matrix = hist_adjacent_matrix(hist_matrixs)
+    # adjacent_matrix = hist_matrix_add_distance_constraint(hist_matrixs)
+    # print adjacent_matrix
+    # # data = generate_vector(getFiles())
+    # # print '----------------------------------------'
+    # # start = clock()
+    # # print start
+    # # # res_matrix = gen_matrix(data)
+    # # res_matrix = gen_matrix_gausses(data)
+    # # end = clock()
+    # # print end
+    # # print end - start
+    # #
+    # # print res_matrix.shape
+
+    # 2015-12-11
+    vectors = generate_vector(getFiles())
+    # sub_distance_matrix = gen_matrix_gausses(vectors)
+    # print sub_distance_matrix
+
+    # generator sift descriptor
+    # sfit_desc_generator(getFiles())
+    sub_distance_matrix = get_sift_distance_matrix_with_constraint(vectors)
+    print sub_distance_matrix
+
+    # generator dsift descriptor
+    # dsfit_desc_generator(getFiles())
