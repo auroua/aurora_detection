@@ -88,7 +88,6 @@ def match(desc1, desc2):
         # if indx.shape[0] >= 2 and desc1.shape[0] >= 2:
         if np.arccos(dotprods)[indx[0]] < dist_ratio*np.arccos(dotprods)[indx[1]]:
                 matchscores[i] = int(indx[0])
-
     return matchscores
 
 
@@ -97,8 +96,8 @@ def match_twosided(desc1, desc2):
     matches_12 = match(desc1, desc2)
     matches_21 = match(desc2, desc1)
     # return the index address
-    print type(matches_12)
-    print matches_12.shape
+    # print type(matches_12)
+    # print matches_12.shape
     # if matches_12 is None:
 
     ndx_12 = matches_12.nonzero()[0]

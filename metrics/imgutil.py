@@ -246,6 +246,10 @@ def get_dsift_distance_matrix_with_constraint(img_vectors):
             else:
                 l1, d1 = sift.read_feature_from_file('dsiftaurora'+str(i)+'.sift')
                 l2, d2 = sift.read_feature_from_file('dsiftaurora'+str(j)+'.sift')
+                if d1.shape[0]<d2.shape[0]:
+                    d1 = np.vstack((d1, np.zeros((d2.shape[0]-d1.shape[0], d1.shape[1]))))
+                elif d1.shape[0]>d2.shape[0]:
+                    d2 = np.vstack((d2, np.zeros((d1.shape[0]-d2.shape[0], d2.shape[1]))))
                 temp_value = np.abs(d1-d2)
                 distance = np.mean(temp_value)
                 img_matrix[i, j] = distance
@@ -260,6 +264,11 @@ def get_dsift_distance_matrix_without_constraint(img_vectors):
         for j in range(0, img_vector.shape[0]):
             l1, d1 = sift.read_feature_from_file('dsiftaurora'+str(i)+'.sift')
             l2, d2 = sift.read_feature_from_file('dsiftaurora'+str(j)+'.sift')
+            if d1.shape[0]<d2.shape[0]:
+                d1 = np.vstack((d1, np.zeros((d2.shape[0]-d1.shape[0], d1.shape[1]))))
+            elif d1.shape[0]>d2.shape[0]:
+                d2 = np.vstack((d2, np.zeros((d1.shape[0]-d2.shape[0], d2.shape[1]))))
+
             temp_value = np.abs(d1-d2)
             distance = np.mean(temp_value)
             img_matrix[i, j] = distance
@@ -294,8 +303,10 @@ if __name__=='__main__':
 
     # generator sift descriptor
     # sfit_desc_generator(getFiles())
-    sub_distance_matrix = get_sift_distance_matrix_with_constraint(vectors)
-    print sub_distance_matrix
+    # sub_distance_matrix = get_sift_distance_matrix_with_constraint(vectors)
+    # print sub_distance_matrix
 
     # generator dsift descriptor
     # dsfit_desc_generator(getFiles())
+    sub_distance_matrix = get_dsift_distance_matrix_with_constraint(vectors)
+    print sub_distance_matrix
