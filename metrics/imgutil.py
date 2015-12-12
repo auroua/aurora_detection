@@ -83,7 +83,7 @@ def hist_adjacent_matrix(hist_matrix):
         for j in xrange(hist_matrix.shape[0]):
             adjacent_matrix_v[i, j] = hist_adjacent(hist_matrix[i], hist_matrix[j])
             adjacent_matrix_v[i, j] *= caucal_gausses(i, j)
-    np.save('/home/aurora/workspace/PycharmProjects/data/hist_adjacent_matrix', adjacent_matrix)
+    np.save('/home/aurora/workspace/PycharmProjects/data/hist_adjacent_matrix', adjacent_matrix_v)
     print adjacent_matrix_v
     return adjacent_matrix_v
 
@@ -177,8 +177,8 @@ def gen_matrix_gausses(img_vector):
     return img_matrix
 
 
-def sfit_desc_generator(filelist):
-    filelists = getFiles()
+def sfit_desc_generator(path='/home/aurora/hdd/workspace/PycharmProjects/data/N20040103G/'):
+    filelists = getFiles(path)
     for index, file in enumerate(filelists):
         sift.process_image(file, 'aurora'+str(index)+'.sift')
 
@@ -199,6 +199,48 @@ def sift_distance(desc1, desc2):
         return 0
     else:
         return values/counts
+
+
+def sift_pan_desc_generator(path='/home/aurora/hdd/workspace/PycharmProjects/data/N20040103G/'):
+    filelists = getFiles(path)
+    feature = []
+    for index, file in enumerate(filelists):
+        sift.process_image(file, 'aurora'+str(index)+'.sift')
+        feature.append('aurora'+str(index)+'.sift')
+    return feature
+
+
+def sift_feature_listnames_generator(path='/home/aurora/hdd/workspace/PycharmProjects/data/N20040103G/'):
+    filelists = getFiles(path)
+    feature = []
+    for index, file in enumerate(filelists):
+        feature.append('aurora'+str(index)+'.sift')
+    return feature
+
+def sift_matrix():
+    featurelist = sift_feature_listnames_generator()
+    imlist = getFiles('/home/aurora/hdd/workspace/PycharmProjects/data/N20040103G/')
+    nbr_images = len(imlist)
+    matchscores = np.zeros((nbr_images, nbr_images))
+    for i in range(nbr_images):
+        for j in range(i, nbr_images):
+            # print 'comparing ', imlist[i], imlist[j]
+            l1, d1 = sift.read_feature_from_file(featurelist[i])
+            l2, d2 = sift.read_feature_from_file(featurelist[j])
+
+            if d1.shape[0] == 0 or d2.shape[0] == 0:
+                matchscores[i, j] = 0
+            else:
+                matches = sift.match_twosided(d1, d2)
+                nbr_matches = sum(matches > 0)
+                print 'number of matches = ', nbr_matches
+                matchscores[i, j] = nbr_matches
+    for i in range(nbr_images):
+        for j in range(i + 1, nbr_images):
+            matchscores[j, i] = matchscores[i, j]
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/aurora_img_matches_matrix_20151212', matchscores)
+    print matchscores
+
 
 def get_sift_distance_matrix_with_constraint(img_vectors):
     img_vector = img_vectors.astype(dtype=np.int32)
@@ -297,16 +339,15 @@ if __name__=='__main__':
     # # print res_matrix.shape
 
     # 2015-12-11
-    vectors = generate_vector(getFiles())
+    # vectors = generate_vector(getFiles())
     # sub_distance_matrix = gen_matrix_gausses(vectors)
     # print sub_distance_matrix
 
     # generator sift descriptor
     # sfit_desc_generator(getFiles())
-    # sub_distance_matrix = get_sift_distance_matrix_with_constraint(vectors)
-    # print sub_distance_matrix
+    sift_matrix()
 
     # generator dsift descriptor
     # dsfit_desc_generator(getFiles())
-    sub_distance_matrix = get_dsift_distance_matrix_with_constraint(vectors)
-    print sub_distance_matrix
+    # sub_distance_matrix = get_dsift_distance_matrix_with_constraint(vectors)
+    # print sub_distance_matrix
