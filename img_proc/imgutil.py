@@ -17,7 +17,9 @@ def getFiles(path='/home/aurora/hdd/workspace/PycharmProjects/data/N20040103G/')
     if len(FileNames)>0:
        for fn in FileNames:
             fullfilename = os.path.join(path, fn)
-            filelist.append(fullfilename)
+            test = fullfilename.split('.')
+            if len(test[-1]) == 3:
+                filelist.append(fullfilename)
 
     # 对文件名排序
     if len(filelist)>0:

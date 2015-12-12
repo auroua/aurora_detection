@@ -83,7 +83,7 @@ def hist_adjacent_matrix(hist_matrix):
         for j in xrange(hist_matrix.shape[0]):
             adjacent_matrix_v[i, j] = hist_adjacent(hist_matrix[i], hist_matrix[j])
             adjacent_matrix_v[i, j] *= caucal_gausses(i, j)
-    np.save('/home/aurora/workspace/PycharmProjects/data/hist_adjacent_matrix', adjacent_matrix)
+    np.save('/home/aurora/workspace/PycharmProjects/data/hist_adjacent_matrix', adjacent_matrix_v)
     print adjacent_matrix_v
     return adjacent_matrix_v
 

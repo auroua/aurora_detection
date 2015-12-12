@@ -50,18 +50,17 @@ def generate_data():
         pickle.dump(class_2, f)
         pickle.dump(labels, f)
 
-
-
-
 if __name__ == '__main__':
     # generate_data()
-    with open('points_normal.pkl', 'r') as f:
+    # with open('points_normal.pkl', 'r') as f:
+    with open('points_ring.pkl', 'r') as f:
         class_1 = pickle.load(f)
         class_2 = pickle.load(f)
         labels = pickle.load(f)
     model = KnnClassifier(labels, np.vstack((class_1, class_2)))
 
-    with open('points_normal_test.pkl', 'r') as f:
+    # with open('points_normal_test.pkl', 'r') as f:
+    with open('points_ring_test.pkl', 'r') as f:
         class_1 = pickle.load(f)
         class_2 = pickle.load(f)
         labels = pickle.load(f)
