@@ -4,6 +4,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from imgutil import getFiles
+import scipy.io as sio
 
 def process_image(imagename, resultname, params="--edge-thresh 10 --peak-thresh 5"):
     """处理一副图像， 然后将结果保存在文件中"""
