@@ -9,6 +9,7 @@ import img_proc.sift as sift
 from PIL import Image
 import img_proc.dsift as dsift
 import scipy.io as sio
+import timeit
 
 # original file path  /home/auroua/workspace/PycharmProjects/data/N20040103G/
 # test file path  /home/auroua/workspace/PycharmProjects/data/test/
@@ -288,43 +289,43 @@ def get_all_dsift_features(filepath):
         l1, d1 = sift.read_feature_from_file(file)
         feature.append(d1.flatten())
     feature = np.array(feature)
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/dsift_features_2015_1214', feature)
     return feature
 
 
-def get_dsift_distance_matrix_with_constraint(img_vectors):
-    img_vector = img_vectors.astype(dtype=np.int32)
-    img_matrix = np.zeros((img_vector.shape[0], img_vector.shape[0]))
-    for i in range(0, img_vector.shape[0]):
-        for j in range(0, img_vector.shape[0]):
+def get_dsift_distance_matrix_with_constraint(features):
+    img_matrix = np.zeros((features.shape[0], features.shape[0]))
+    for i in range(0, features.shape[0]):
+        for j in range(i, features.shape[0]):
             v_distance = math.fabs(i-j)
             if v_distance <= 10:
                 img_matrix[i, j] = 0
             else:
-                l1, d1 = sift.read_feature_from_file('dsiftaurora'+str(i)+'.sift')
-                l2, d2 = sift.read_feature_from_file('dsiftaurora'+str(j)+'.sift')
-                # if d1.shape[0]<d2.shape[0]:
-                #     d1 = np.vstack((d1, np.zeros((d2.shape[0]-d1.shape[0], d1.shape[1]))))
-                # elif d1.shape[0]>d2.shape[0]:
-                #     d2 = np.vstack((d2, np.zeros((d1.shape[0]-d2.shape[0], d2.shape[1]))))
-                temp_value = np.abs(d1-d2)
-                distance = np.mean(temp_value)
-                img_matrix[i, j] = distance
-    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/dsift_distance_2015_1211_with_constraint',img_matrix)
+                d1 = features[i][:300000]
+                d2 = features[j][:300000]
+                img_matrix[i, j] = np.sqrt((d1-d2)**2).sum()
+                img_matrix[i, j] *= caucal_gausses(i, j)
+    # copy matrix
+    for i in range(features.shape[0]):
+        for j in range(i+1, features.shape[0]):
+            img_matrix[j, i] = img_matrix[i, j]
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/dsift_distance_2015_1214_with_constraint',img_matrix)
     return img_matrix
 
 
-def get_dsift_distance_matrix_without_constraint(img_vectors):
-    img_vector = img_vectors.astype(dtype=np.int32)
-    img_matrix = np.zeros((img_vector.shape[0], img_vector.shape[0]))
-    for i in range(0, img_vector.shape[0]):
-        for j in range(0, img_vector.shape[0]):
-            l1, d1 = sift.read_feature_from_file('dsiftaurora'+str(i)+'.sift')
-            l2, d2 = sift.read_feature_from_file('dsiftaurora'+str(j)+'.sift')
+def get_dsift_distance_matrix_without_constraint(features):
+    img_matrix = np.zeros((features.shape[0], features.shape[0]))
+    for i in range(0, features.shape[0]):
+        for j in range(i, features.shape[0]):
+            d1 = features[i][:300000]
+            d2 = features[j][:300000]
+            img_matrix[i, j] = np.sqrt((d1-d2)**2).sum()
+            img_matrix[i, j] *= caucal_gausses(i, j)
 
-            temp_value = np.abs(d1-d2)
-            distance = np.mean(temp_value)
-            img_matrix[i, j] = distance
-    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/dsift_distance_2015_1211_without_constraint',img_matrix)
+    for i in range(features.shape[0]):
+        for j in range(i+1, features.shape[0]):
+            img_matrix[j, i] = img_matrix[i, j]
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/dsift_distance_2015_1214_without_constraint',img_matrix)
     return img_matrix
 
 
@@ -351,34 +352,38 @@ def gen_matrix_gausses(img_vector):
     return img_matrix
 
 
-def get_lbp_distance_matrix_with_constraint(file_list):
-    img_matrix = np.zeros((len(file_list), len(file_list)))
-    for i in range(0, len(file_list)):
-        file_lbp1 = get_lbp_filename(file_list[i])
-        lbp1 = get_mat_lbp(file_lbp1)
-        for j in range(0, len(file_list)):
-            file_lbp2 = get_lbp_filename(file_list[j])
-            lbp2 = get_mat_lbp(file_lbp2)
+def get_lbp_distance_matrix_with_constraint(lbp):
+    img_matrix = np.zeros((lbp.shape[0], lbp.shape[0]))
+    for i in range(0, lbp.shape[0]):
+        lbp1 = lbp[i]
+        for j in range(i, lbp.shape[0]):
+            lbp2 = lbp[j]
             v_distance = math.fabs(i-j)
             if v_distance <= 10:
                 img_matrix[i, j] = 0
             else:
                 img_matrix[i, j] = np.sqrt((lbp2-lbp1)**2).sum()
                 img_matrix[i, j] *= caucal_gausses(i, j)
-    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/lbp_distance_2015_1213_with_constraint',img_matrix)
+
+    for i in range(lbp.shape[0]):
+        for j in range(i+1, lbp.shape[0]):
+            img_matrix[j, i] = img_matrix[i, j]
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/lbp_distance_2015_1214_with_constraint',img_matrix)
     return img_matrix
 
 
-def get_lbp_distance_matrix_without_constraint(file_list):
-    img_matrix = np.zeros((len(file_list), len(file_list)))
-    for i in range(0, len(file_list)):
-        file_lbp1 = get_lbp_filename(file_list[i])
-        lbp1 = get_mat_lbp(file_lbp1)
-        for j in range(0, len(file_list)):
-            file_lbp2 = get_lbp_filename(file_list[j])
-            lbp2 = get_mat_lbp(file_lbp2)
+def get_lbp_distance_matrix_without_constraint(lbp):
+    img_matrix = np.zeros((lbp.shape[0], lbp.shape[0]))
+    for i in range(0, lbp.shape[0]):
+        lbp1 = lbp[i]
+        for j in range(i, lbp.shape[0]):
+            lbp2 = lbp[j]
             img_matrix[i, j] = np.sqrt((lbp2-lbp1)**2).sum()
             img_matrix[i, j] *= caucal_gausses(i, j)
+
+    for i in range(lbp.shape[0]):
+        for j in range(i+1, lbp.shape[0]):
+            img_matrix[j, i] = img_matrix[i, j]
     np.save('/home/aurora/hdd/workspace/PycharmProjects/data/lbp_distance_2015_1213_without_constraint',img_matrix)
     return img_matrix
 
@@ -392,7 +397,22 @@ def get_lbp_filename(files):
     return filename
 
 
+def get_all_lbp_features(filepath):
+    features_files = [os.path.join(filepath, filename) for index, filename in enumerate(os.listdir(filepath))]
+    if len(features_files)>0:
+        features_files.sort()
+    lbp_features = []
+    for file in features_files:
+        print file
+        lbp = get_mat_lbp(file)
+        lbp_features.append(lbp.flatten())
+    lbp_features = np.array(lbp_features)
+    np.save('/home/aurora/hdd/workspace/PycharmProjects/data/lbp_features_2015_1214', lbp_features)
+    return lbp_features
+
+
 if __name__=='__main__':
+    start_time = timeit.default_timer()
     # # img = getImg('/home/aurora/workspace/PycharmProjects/data/N20040103G/N20040103G030001.bmp')
     # # showImg(img)
     # hist_matrixs = generate_hist(getFiles())
@@ -421,14 +441,27 @@ if __name__=='__main__':
     # sfit_desc_generator(getFiles())
     # sift_matrix()
 
+
+    # D-SIFT
     # generator dsift descriptor
-    dsfit_desc_generator(getFiles())
+    # dsfit_desc_generator(getFiles())
     # sub_distance_matrix = get_dsift_distance_matrix_with_constraint(vectors)
     # print sub_distance_matrix
+    # save features
     # features = get_all_dsift_features('/home/aurora/workspace/PycharmProjects/aurora_detection/dsift_features')
-    # print features.shape
+    # np.save('/home/aurora/hdd/workspace/PycharmProjects/data/dsift_features_2015_1214', features)
 
-    # 2015-12-13 caculate lbp features
-    # file = getFiles()
-    # get_lbp_distance_matrix_with_constraint(file)
-    # get_lbp_distance_matrix_without_constraint(file)
+    # features = np.load('/home/aurora/hdd/workspace/PycharmProjects/data/dsift_features_2015_1214.npy')
+    # get_dsift_distance_matrix_with_constraint(features)
+    # get_dsift_distance_matrix_without_constraint(features)
+
+    # LBP
+    # 2015-12-13 caculate lbp featurestest_features
+    # url = '/home/aurora/hdd/workspace/PycharmProjects/data/N20040103G_LBP_R2P8U2'
+    # lbp = get_all_lbp_features(url)
+    # get_lbp_distance_matrix_with_constraint(lbp)
+    lbp = np.load('/home/aurora/hdd/workspace/PycharmProjects/data/lbp_features_2015_1214.npy')
+    get_lbp_distance_matrix_without_constraint(lbp)
+
+    end_time = timeit.default_timer()
+    print 'total time is ===', (end_time-start_time)/60.0
