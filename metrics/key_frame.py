@@ -40,7 +40,9 @@ def generate_key_frame(indexs):
 
 
 if __name__ == '__main__':
-    matrix = np.load('/home/aurora/hdd/workspace/PycharmProjects/data/hist_ncuts_constraint_sigma_33.npy')
+    # matrix = np.load('/home/aurora/hdd/workspace/PycharmProjects/data/hist_ncuts_constraint_sigma_33.npy')
+    matrix = np.load('/home/aurora/hdd/workspace/PycharmProjects/data/sub_matrix_distance_2015_1211.npy')
+    print matrix.shape
     matrix_index = []
     for i in xrange(matrix.shape[1]):
         temp = get_index(matrix[0, i, :], i)
