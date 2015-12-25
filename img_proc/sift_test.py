@@ -61,6 +61,7 @@ def generat_graph(matchscores, imlist, nbr_images, path):
 
 
 if __name__=='__main__':
+    # sift_matrix()
     matchscores = np.load('pan_img_matchscore.npy')
     imlist = getFiles('/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/panoimages/')
     nbr_images = len(imlist)
