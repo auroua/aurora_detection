@@ -36,7 +36,7 @@ R = 1 # radius
 
 for x in range(0, len(img)):
     for y in range(0, len(img[0])):
-        center        = img[x,y]
+        center = img[x,y]
         pixels = []
         for point in range(0, P):
             r = x + R * math.cos(2 * math.pi * point / P)

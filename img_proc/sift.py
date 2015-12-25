@@ -27,6 +27,16 @@ def read_feature_from_file(filename):
         f = f.reshape((1, f.shape[0]))
     return f[:, :4], f[:, 4:]
 
+def read_scale_from_file(filename):
+    """读取特征属性值，然后将其以矩阵的形式返回"""
+    f = np.loadtxt(filename)
+    if f.ndim == 1:
+        f = f.reshape((1, f.shape[0]))
+    if f.shape[1]==0:
+        return np.array([0])
+    else:
+        return f[:, 2]
+
 
 def write_features_to_file(filename, locs, desc):
     """将特征位置和描述子保存到文件中"""
@@ -175,6 +185,9 @@ if __name__ == '__main__':
     # im1 = '/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/crans_1_small.jpg'
     im1 = '/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/climbing_1_small.jpg'
     im2 = '/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/climbing_2_small.jpg'
+
+    url3 = '/home/aurora/hdd/workspace/PycharmProjects/data/aurora/1/N20040118G114522.bmp'
+    url4 = '/home/aurora/hdd/workspace/PycharmProjects/data/aurora/2/N20040118G103332.bmp'
     # filelists = imgutil.getFiles()
     # for file in filelists:
     #     img = np.array(Image.open(file).convert('L'))
@@ -188,19 +201,29 @@ if __name__ == '__main__':
     # filtered_coords = get_harris_points(harrisim, 6)
     # plot_harris_points(im1, filtered_coords)
 
-    process_image(im1, 'im1.sift')
-    l1, d1 = read_feature_from_file('im1.sift')
+    # process_image(im1, 'im1.sift')
+    # l1, d1 = read_feature_from_file('im1.sift')
+    #
+    # process_image(im2, 'im2.sift')
+    # l2, d2 = read_feature_from_file('im2.sift')
 
-    process_image(im2, 'im2.sift')
-    l2, d2 = read_feature_from_file('im2.sift')
+    process_image(url3, 'im3.sift')
+    l3, d3 = read_feature_from_file('im3.sift')
+    process_image(url4, 'im4.sift')
+    l4, d4 = read_feature_from_file('im4.sift')
+    # plt.figure()
+    # plt.gray()
+    # im3 = np.array(Image.open(url3).convert('L'))
+    # plot_features(im3, l3, circle=True)
+    # plt.show()
 
     print 'starting matching'
-    matches = match_twosided(d1, d2)
+    matches = match_twosided(d3, d4)
 
     plt.figure()
     plt.gray()
 
-    img1 = np.array(Image.open('/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/climbing_1_small.jpg').convert('L'))
-    img2 = np.array(Image.open('/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/climbing_2_small.jpg').convert('L'))
-    plot_matches(img1, img2, l1, l2, matches)
+    img1 = np.array(Image.open(url3).convert('L'))
+    img2 = np.array(Image.open(url4).convert('L'))
+    plot_matches(img1, img2, l3, l4, matches)
     plt.show()
