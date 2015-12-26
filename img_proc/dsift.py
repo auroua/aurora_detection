@@ -37,14 +37,15 @@ if __name__=='__main__':
     process_image_dsift('/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/climbing_2_small.jpg', 'climbing_2.sift', 90, 40, True)
     l1, d1 = sift.read_feature_from_file('climbing_1.sift')
     l2, d2 = sift.read_feature_from_file('climbing_2.sift')
-
+    img1 = np.array(Image.open('/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/climbing_1_small.jpg').convert('L'))
     print 'starting matching'
     matches = sift.match_twosided(d1, d2)
 
     plt.figure()
     plt.gray()
+    sift.plot_features(img1, l1, True)
 
-    img1 = np.array(Image.open('/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/climbing_1_small.jpg').convert('L'))
-    img2 = np.array(Image.open('/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/climbing_2_small.jpg').convert('L'))
-    sift.plot_matches(img1, img2, l1, l2, matches)
+    # img1 = np.array(Image.open('/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/climbing_1_small.jpg').convert('L'))
+    # img2 = np.array(Image.open('/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/climbing_2_small.jpg').convert('L'))
+    # sift.plot_matches(img1, img2, l1, l2, matches)
     plt.show()

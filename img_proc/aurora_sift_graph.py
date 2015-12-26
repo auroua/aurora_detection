@@ -99,41 +99,29 @@ def generate_scale_box():
     scale_2 = np.load('scales_2.npy')
     scale_3 = np.load('scales_3.npy')
     scale_4 = np.load('scales_4.npy')
+    print scale_1.shape, scale_2.shape, scale_3.shape, scale_4.shape
     data = np.zeros((scale_1.shape[0], 4))
     data[:, 0] = scale_1
     data[0:scale_2.shape[0], 1] = scale_2
     data[0:scale_3.shape[0], 2] = scale_3
     data[0:scale_4.shape[0], 3] = scale_4
-    labels = list('ABCD')
-    fs = 10  # fontsize
-    # print np.max(scale_1), np.min(scale_1), np.mean(scale_1), np.std(scale_1), np.median(scale_1)
-    # print np.max(scale_2), np.min(scale_2), np.mean(scale_2), np.std(scale_2), np.median(scale_2)
-    # print np.max(scale_3), np.min(scale_3), np.mean(scale_3), np.std(scale_3), np.median(scale_3)
-    # print np.max(scale_4), np.min(scale_4), np.mean(scale_4), np.std(scale_4), np.median(scale_4)
-    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 5))
 
-    # generate some random test data
+    # plt.boxplot(scale_2, notch=True, patch_artist=True)
+    # plt.boxplot(scale_3, notch=True, patch_artist=True)
+    # plt.boxplot(scale_4, notch=True, patch_artist=True)
+    # plt.boxplot(data)
+    fig, axes = plt.subplots(nrows=2, ncols=2)
+    ax0, ax1, ax2, ax3 = axes.flat
+    ax0.boxplot(scale_1, notch=True, patch_artist=True)
+    ax0.set_title('scale_1')
+    ax1.boxplot(scale_2, notch=True, patch_artist=True)
+    ax1.set_title('scale_2')
+    ax2.boxplot(scale_3, notch=True, patch_artist=True)
+    ax2.set_title('scale_3')
+    ax3.boxplot(scale_4, notch=True, patch_artist=True)
+    ax3.set_title('scale_4')
 
-    # plot violin plot
-    axes[0].violinplot(data,
-                       showmeans=False,
-                       showmedians=True)
-    axes[0].set_title('violin plot')
 
-    # plot box plot
-    axes[1].boxplot(data)
-    axes[1].set_title('box plot')
-
-    # adding horizontal grid lines
-    for ax in axes:
-        ax.yaxis.grid(True)
-        ax.set_xticks([y+1 for y in range(len(data))])
-        ax.set_xlabel('xlabel')
-        ax.set_ylabel('ylabel')
-
-    # add x-tick labels
-    plt.setp(axes, xticks=[y+1 for y in range(len(data))],
-             xticklabels=['x1', 'x2', 'x3', 'x4'])
     plt.show()
 
 if __name__=='__main__':
