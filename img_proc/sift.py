@@ -224,6 +224,7 @@ if __name__ == '__main__':
     plt.gray()
 
     img1 = np.array(Image.open(url3).convert('L'))
+    plt.imshow(img1)
     img2 = np.array(Image.open(url4).convert('L'))
     plot_matches(img1, img2, l3, l4, matches)
     plt.show()
