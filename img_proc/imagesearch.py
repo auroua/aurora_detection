@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import math
 
 
+
 class Indexer(object):
     def __init__(self, db, voc):
         """初始化数据库的名称及词汇对象"""
@@ -142,7 +143,7 @@ if __name__ == '__main__':
     url = '/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/first1000/'
     with open('vocabulary.pkl', 'rb') as f:
         voc = pickle.load(f)
-    indx = Indexer('test.db', voc)
+    indx = Indexer('/home/aurora/hdd/workspace/PycharmProjects/test.db', voc)
     # # init database
     # indx.create_tables2()
     # insert data to database
