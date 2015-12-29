@@ -72,7 +72,7 @@ if __name__ == '__main__':
     # gen_texture(url)
     imlists = get_feature_list(url)
     voc_model = Vocabulary('ukbenchtest')
-    voc_model.train(imlists, 1000, 10)
-    with open('vocabulary.pkl', 'wb') as f:
+    voc_model.train(imlists, 2000, 1)
+    with open('vocabulary-new.pkl', 'wb') as f:
         pickle.dump(voc_model, f)
     print 'vocabulary is:', voc_model.name, voc_model.nbr_words
