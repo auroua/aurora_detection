@@ -6,6 +6,7 @@ import sift
 import pickle
 import matplotlib.pyplot as plt
 
+
 class Indexer(object):
     def __init__(self, db, voc):
         """初始化数据库的名称及词汇对象"""
@@ -95,7 +96,7 @@ if __name__ == '__main__':
     url = '/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/first1000/'
     with open('vocabulary.pkl', 'rb') as f:
         voc = pickle.load(f)
-    indx = Indexer('test.db', voc)
+    indx = Indexer('/home/aurora/hdd/workspace/PycharmProjects/test.db', voc)
     # # init database
     # indx.create_tables()
     # # insert data to database
@@ -110,13 +111,13 @@ if __name__ == '__main__':
     #     indx.add_to_index(imlists[i], descr)
     # indx.db_commit()
 
-    src = Searcher('test.db', voc)
+    src = Searcher('/home/aurora/hdd/workspace/PycharmProjects/test.db', voc)
     locs, descr = sift.read_feature_from_file(url+'ukbench00432.sift')
     iw = src.voc.project(descr)
-    index = range(0, iw.shape[0], 1)
-    figure, ax = plt.subplots()
-    ax.scatter(index, iw)
-    plt.show()
+    # index = range(0, iw.shape[0], 1)
+    # figure, ax = plt.subplots()
+    # ax.scatter(index, iw)
+    # plt.show()
 
     print 'ask using a histogram...'
     print src.candidates_from_histogram(iw)
