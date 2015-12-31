@@ -15,10 +15,12 @@ def gen_texture(url):
 
 def get_feature_list(url):
     imlist = [os.path.join(url, f) for f in os.listdir(url) if f.endswith('sift')]
+    imlist.sort()
     return imlist
 
 def get_img_list(url):
     imlist = [os.path.join(url, f) for f in os.listdir(url) if f.endswith('jpg')]
+    imlist.sort()
     return imlist
 
 
@@ -72,7 +74,7 @@ if __name__ == '__main__':
     # gen_texture(url)
     imlists = get_feature_list(url)
     voc_model = Vocabulary('ukbenchtest')
-    voc_model.train(imlists, 2000, 1)
-    with open('vocabulary-new.pkl', 'wb') as f:
+    voc_model.train(imlists, 3000, 1)
+    with open('vocabulary-new33.pkl', 'wb') as f:
         pickle.dump(voc_model, f)
     print 'vocabulary is:', voc_model.name, voc_model.nbr_words
