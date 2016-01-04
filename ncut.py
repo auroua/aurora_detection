@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.cluster.vq import *
-from scipy.cluster.vq import *
 from PIL import Image
 from scipy.misc import imresize
 
@@ -12,6 +11,7 @@ def ncut_graph_matrix(im,sigma_d=1e2,sigma_g=1e-2):
 
     m,n = im.shape[:2]
     N = m*n
+    print m, n, N
 
     # normalize and create feature vector of RGB or grayscale
     if len(im.shape)==3:
@@ -39,16 +39,19 @@ def cluster(S,k,ndim):
     """ Spectral clustering from a similarity matrix."""
 
     # check for symmetry
-    if sum(abs(S-S.T)) > 1e-10:
+    if np.sum(np.abs(S-S.T)) > 1e-10:
         print 'not symmetric'
 
     # create Laplacian matrix
-    rowsum = sum(abs(S),axis=0)
+    rowsum = np.sum(np.abs(S),axis=0)
     D = np.diag(1 / np.sqrt(rowsum + 1e-6))
     L = np.dot(D, np.dot(S,D))
 
     # compute eigenvectors of L
     U,sigma,V = np.linalg.svd(L,full_matrices=False)
+    # print V
+    # print V.shape
+    # print np.sum(V-V.T)
 
     # create feature vector from ndim first eigenvectors
     # by stacking eigenvectors as columns
@@ -64,6 +67,7 @@ def cluster(S,k,ndim):
 if __name__=='__main__':
     url = '/home/aurora/hdd/workspace/PycharmProjects/data/pcv_img/C-uniform03.ppm'
     im = np.array(Image.open(url))
+
     m, n = im.shape[:2]
     # resize image to (wid,wid)
     wid = 50
@@ -72,6 +76,16 @@ if __name__=='__main__':
     # create normalized cut matrix
     A = ncut_graph_matrix(rim, sigma_d=1, sigma_g=1e-2)
     # cluster
-    code, V = cluster(A, k=3, ndim=3)
-
+    code, V = cluster(A, k=4, ndim=3)
+    print np.unique(code)
+    plt.figure()
     plt.imshow(imresize(code.reshape(wid,wid),(m,n),interp='bilinear'))
+    plt.figure()
+    plt.imshow(imresize(V[0].reshape(wid,wid),(m,n),interp='bilinear'))
+    plt.figure()
+    plt.imshow(imresize(V[1].reshape(wid,wid),(m,n),interp='bilinear'))
+    plt.figure()
+    plt.imshow(imresize(V[2].reshape(wid,wid),(m,n),interp='bilinear'))
+    plt.figure()
+    plt.imshow(imresize(V[3].reshape(wid,wid),(m,n),interp='bilinear'))
+    plt.show()
